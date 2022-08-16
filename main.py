@@ -11,6 +11,7 @@ HEIGHT = 800
 black = (0, 0, 0)
 white = (255, 255, 255)
 gray = (128, 128, 128)
+dark_gray = (64, 64, 64)
 green = (0, 255, 0)
 gold = (212, 175, 55)
 blue = (0, 255, 255)
@@ -18,6 +19,7 @@ blue = (0, 255, 255)
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 pygame.display.set_caption('Beat Maker')
 label_font = pygame.font.Font('font/Roboto-Bold.ttf', 32)
+medium_font = pygame.font.Font('font/Roboto-Bold.ttf', 24)
 
 fps = 60
 timer = pygame.time.Clock()
@@ -119,6 +121,16 @@ while run:
     timer.tick(fps)
     screen.fill(black)
     boxes = draw_grid(clicked, active_beat)
+    # lower menu buttons (play/pause)
+    play_pause = pygame.draw.rect(screen, gray, [50, HEIGHT - 150, 200, 100], 0, 5)
+    play_text = label_font.render('play/pause', True, white)
+    screen.blit(play_text, (70, HEIGHT - 130))
+    if playing:
+        play_text2 = medium_font.render('playing', True, dark_gray)
+    else:
+        play_text2 = medium_font.render('paused', True, dark_gray)
+    screen.blit(play_text2, (70, HEIGHT - 100))
+
     if beat_changed:
         play_notes()
         beat_changed = False
@@ -131,6 +143,12 @@ while run:
                 if boxes[i][0].collidepoint(event.pos):
                     coords = boxes[i][1]
                     clicked[coords[1]][coords[0]] *= -1
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if play_pause.collidepoint(event.pos):
+                if playing:
+                    playing = False
+                elif not playing:
+                    playing = True
 
     beat_length = 3600 // bpm
 
